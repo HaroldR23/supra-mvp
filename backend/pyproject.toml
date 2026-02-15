@@ -1,0 +1,23 @@
+[tool.poetry]
+name = "supra-mvp-backend"
+version = "0.1.0"
+description = "Supra MVP Backend"
+authors = []
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.10"
+fastapi = "0.109.2"
+uvicorn = {version = "0.27.1", extras = ["standard"]}
+sqlalchemy = "2.0.25"
+alembic = "1.13.1"
+psycopg2-binary = "2.9.9"
+pydantic = "2.6.1"
+pydantic-settings = "2.1.0"
+python-jose = {version = "3.3.0", extras = ["cryptography"]}
+bcrypt = "4.2.0"
+python-multipart = "0.0.9"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
