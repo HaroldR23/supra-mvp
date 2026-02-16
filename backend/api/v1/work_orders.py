@@ -6,7 +6,7 @@ from sqlalchemy.orm import Session
 
 from adapters.db.session import get_db
 from adapters.db.repositories.work_order_repository import WorkOrderRepository
-from api.deps import require_technician_or_admin, get_current_user
+from api.deps import require_admin, require_technician_or_admin, get_current_user
 from domain.models.user import User
 from domain.models.work_order import WorkOrderStatus
 from schemas.work_order import WorkOrderCreate, WorkOrderUpdate, WorkOrderResponse
@@ -61,7 +61,7 @@ def list_orders(
 def create_order(
     data: WorkOrderCreate,
     db: Session = Depends(get_db),
-    current_user: User = Depends(require_technician_or_admin),
+    current_user: User = Depends(require_admin),
 ):
     repo = WorkOrderRepository(db)
     order = create_work_order(repo, data)
