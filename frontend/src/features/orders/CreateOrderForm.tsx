@@ -16,7 +16,6 @@ export function CreateOrderForm() {
     equipment_model: "",
     serial_number: "",
     intake_reason: "",
-    estimated_cost: "0",
   });
 
   async function handleSubmit(e: React.FormEvent) {
@@ -25,7 +24,8 @@ export function CreateOrderForm() {
       const order = await createOrder.mutateAsync({
         ...form,
         warranty,
-        estimated_cost: warranty ? 0 : Number(form.estimated_cost) || 0,
+        // Al crear la orden no se pide costo estimado; se inicializa en 0
+        estimated_cost: 0,
       });
       router.push(`/orders/${order.id}`);
     } catch {
@@ -60,7 +60,7 @@ export function CreateOrderForm() {
         value={form.serial_number}
         onChange={(e) => setForm((f) => ({ ...f, serial_number: e.target.value }))}
         required
-      />asdasd
+      />
       <div>
         <label className="text-sm font-medium text-slate-700 block mb-1">
           Motivo de ingreso
@@ -86,16 +86,6 @@ export function CreateOrderForm() {
           En garantía
         </label>
       </div>
-
-      <Input
-        label="Costo estimado"
-        type="number"
-        min={0}
-        step={0.01}
-        value={form.estimated_cost}
-        onChange={(e) => setForm((f) => ({ ...f, estimated_cost: e.target.value }))}
-        disabled={warranty}
-      />
 
       <div className="flex gap-2">
         <Button type="submit" isLoading={createOrder.isPending}>
