@@ -17,6 +17,7 @@ pydantic-settings = "2.1.0"
 python-jose = {version = "3.3.0", extras = ["cryptography"]}
 bcrypt = "4.2.0"
 python-multipart = "0.0.9"
+reportlab = "*"
 
 [build-system]
 requires = ["poetry-core"]

@@ -6,6 +6,7 @@ import {
   getOrder,
   createOrder,
   updateOrder,
+  downloadOrderPdf,
   type ListOrdersParams,
 } from "@/services/orders.service";
 import type { WorkOrderCreate, WorkOrderUpdate } from "@/types/work-order";
@@ -44,5 +45,11 @@ export function useUpdateOrder() {
       queryClient.invalidateQueries({ queryKey: ["orders"] });
       queryClient.invalidateQueries({ queryKey: ["order", id] });
     },
+  });
+}
+
+export function useDownloadOrderPdf() {
+  return useMutation({
+    mutationFn: (id: string) => downloadOrderPdf(id),
   });
 }

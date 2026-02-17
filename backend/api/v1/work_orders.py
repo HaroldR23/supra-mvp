@@ -1,15 +1,18 @@
 from datetime import date
 from typing import Optional
+from io import BytesIO
 
 from fastapi import APIRouter, Depends, HTTPException
+from fastapi.responses import StreamingResponse
 from sqlalchemy.orm import Session
 
 from adapters.db.session import get_db
 from adapters.db.repositories.work_order_repository import WorkOrderRepository
-from api.deps import require_admin, require_technician_or_admin, get_current_user
+from api.deps import require_admin, require_technician_or_admin
 from domain.models.user import User
 from domain.models.work_order import WorkOrderStatus
 from schemas.work_order import WorkOrderCreate, WorkOrderUpdate, WorkOrderResponse
+from services.work_order_pdf import generate_work_order_pdf
 from use_cases.work_order import (
     create_work_order,
     get_work_order,
@@ -93,3 +96,25 @@ def update_order(
     if not order:
         raise HTTPException(status_code=404, detail="Order not found")
     return _to_response(order)
+
+
+@router.get("/orders/{order_id}/pdf")
+def download_order_pdf(
+    order_id: str,
+    db: Session = Depends(get_db),
+    current_user: User = Depends(require_technician_or_admin),
+):
+    repo = WorkOrderRepository(db)
+    order = get_work_order(repo, order_id)
+    
+    if not order:
+        raise HTTPException(status_code=404, detail="Order not found")
+    pdf_bytes = generate_work_order_pdf(order)
+
+    return StreamingResponse(
+        BytesIO(pdf_bytes),
+        media_type="application/pdf",
+        headers={
+            "Content-Disposition": f'attachment; filename="orden_{order.id}.pdf"'
+        },
+    )
