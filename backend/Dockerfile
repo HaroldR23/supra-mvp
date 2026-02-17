@@ -6,6 +6,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     gcc \
     libpq-dev \
     curl \
+    postgresql-client \
     && rm -rf /var/lib/apt/lists/*
 
 ENV POETRY_VERSION=1.8.3 \
@@ -20,5 +21,10 @@ RUN poetry install --no-dev --no-interaction --no-ansi
 
 COPY . .
 EXPOSE 8000
+
+COPY entrypoint.sh /entrypoint.sh
+RUN chmod +x /entrypoint.sh
+
+ENTRYPOINT ["/entrypoint.sh"]
 
 CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8000"]

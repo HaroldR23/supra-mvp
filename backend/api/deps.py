@@ -5,12 +5,11 @@ from jose import JWTError, jwt
 import bcrypt
 from sqlalchemy.orm import Session
 
-from config import get_settings
+from config import access_token_expire_minutes, algorithm, secret_key
 from adapters.db.session import get_db
 from adapters.db.repositories.user_repository import UserRepository
 from domain.models.user import User, UserRole
 
-settings = get_settings()
 security = HTTPBearer()
 
 
@@ -33,16 +32,16 @@ def create_access_token(data: dict) -> str:
     import datetime
     to_encode = data.copy()
     expire = datetime.datetime.utcnow() + datetime.timedelta(
-        minutes=settings.access_token_expire_minutes
+        minutes=access_token_expire_minutes
     )
     to_encode.update({"exp": expire})
-    return jwt.encode(to_encode, settings.secret_key, algorithm=settings.algorithm)
+    return jwt.encode(to_encode, secret_key, algorithm=algorithm)
 
 
 def decode_token(token: str) -> dict | None:
     try:
         payload = jwt.decode(
-            token, settings.secret_key, algorithms=[settings.algorithm]
+            token, secret_key, algorithms=[algorithm]
         )
         return payload
     except JWTError:

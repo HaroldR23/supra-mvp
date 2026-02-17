@@ -1,19 +1,12 @@
 from pydantic_settings import BaseSettings
 from functools import lru_cache
+from dotenv import load_dotenv
+import os
 
+load_dotenv()
 
-class Settings(BaseSettings):
-    database_url: str = "postgresql+psycopg2://workshop:workshop@localhost:5432/workshop"
-    secret_key: str = "change-me-in-production"
-    environment: str = "development"
-    algorithm: str = "HS256"
-    access_token_expire_minutes: int = 30
-
-    class Config:
-        env_file = ".env"
-        env_file_encoding = "utf-8"
-
-
-@lru_cache
-def get_settings() -> Settings:
-    return Settings()
+database_url: str = os.environ.get("DATABASE_URL", "sqlite:///./test.db")
+secret_key: str = os.environ.get("SECRET_KEY", "your-secret-key-for-jwt")
+environment: str = os.environ.get("ENVIRONMENT", "development")
+algorithm: str = "HS256"
+access_token_expire_minutes: int = 30
