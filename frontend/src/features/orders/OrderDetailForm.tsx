@@ -152,7 +152,7 @@ export function OrderDetailForm({ orderId }: OrderDetailFormProps) {
           type="number"
           min={0}
           step={0.01}
-          value={estimatedCost}
+          value={warranty ? 0 : estimatedCost}
           onChange={(e) => setEstimatedCost(e.target.value)}
           disabled={warranty}
         />
