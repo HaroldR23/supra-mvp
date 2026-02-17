@@ -35,3 +35,10 @@ export async function updateOrder(id: string, update: WorkOrderUpdate): Promise<
   const { data } = await api.patch<WorkOrder>(`/orders/${id}`, payload);
   return data;
 }
+
+export async function downloadOrderPdf(id: string): Promise<Blob> {
+  const response = await api.get<Blob>(`/orders/${id}/pdf`, {
+    responseType: "blob",
+  });
+  return response.data;
+}

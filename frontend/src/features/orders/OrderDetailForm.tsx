@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/Button";
 import { Input } from "@/components/ui/Input";
 import { Select } from "@/components/ui/Select";
-import { useOrder, useUpdateOrder } from "@/hooks/useOrders";
+import { useOrder, useUpdateOrder, useDownloadOrderPdf } from "@/hooks/useOrders";
 import type { WorkOrderStatus } from "@/types/work-order";
 
 const STATUS_OPTIONS: { value: WorkOrderStatus; label: string }[] = [
@@ -23,26 +23,30 @@ export function OrderDetailForm({ orderId }: OrderDetailFormProps) {
   const router = useRouter();
   const { data: order, isLoading, error } = useOrder(orderId);
   const updateOrder = useUpdateOrder();
+  const downloadPdf = useDownloadOrderPdf();
   const [status, setStatus] = useState<WorkOrderStatus>("RECEIVED");
   const [diagnosis, setDiagnosis] = useState("");
   const [estimatedCost, setEstimatedCost] = useState("0");
   const [warranty, setWarranty] = useState(false);
 
   useEffect(() => {
-    if (order) {
-      setStatus(order.status);
-      setDiagnosis(order.diagnosis || "");
-      setEstimatedCost(
-        typeof order.estimated_cost === "number"
-          ? String(order.estimated_cost)
-          : String(order.estimated_cost || "0")
-      );
-      setWarranty(order.warranty);
-    }
+    const fetchOrder = async () => {
+      if (order) {
+        setStatus(order.status);
+        setDiagnosis(order.diagnosis || "");
+        setEstimatedCost(
+          typeof order.estimated_cost === "number"
+            ? String(order.estimated_cost)
+            : String(order.estimated_cost || "0")
+        );
+        setWarranty(order.warranty);
+      }
+    };
+    fetchOrder();
   }, [order]);
 
-  async function handleSubmit(e: React.FormEvent) {
-    e.preventDefault();
+  async function handleSubmit(e?: React.FormEvent) {
+    if (e) e.preventDefault();
     try {
       await updateOrder.mutateAsync({
         id: orderId,
@@ -53,6 +57,24 @@ export function OrderDetailForm({ orderId }: OrderDetailFormProps) {
           warranty,
         },
       });
+    } catch {
+      // Error handling
+    }
+  }
+
+  async function handleDownloadPdf() {
+    if (!order) return;
+    try {
+      await handleSubmit();
+      const blob = await downloadPdf.mutateAsync(orderId);
+      const url = window.URL.createObjectURL(blob);
+      const link = document.createElement("a");
+      link.href = url;
+      link.download = `orden_${order.id.slice(0, 8)}.pdf`;
+      document.body.appendChild(link);
+      link.click();
+      link.remove();
+      window.URL.revokeObjectURL(url);
     } catch {
       // Error handling
     }
@@ -138,6 +160,14 @@ export function OrderDetailForm({ orderId }: OrderDetailFormProps) {
         <div className="flex gap-2">
           <Button type="submit" isLoading={updateOrder.isPending}>
             Guardar cambios
+          </Button>
+          <Button
+            type="button"
+            variant="secondary"
+            onClick={handleDownloadPdf}
+            isLoading={downloadPdf.isPending}
+          >
+            Descargar PDF
           </Button>
           <Button type="button" variant="secondary" onClick={() => router.push("/")}>
             Volver
