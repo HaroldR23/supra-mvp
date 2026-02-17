@@ -34,7 +34,7 @@ export function CreateOrderForm() {
   }
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-4 max-w-xl">
+    <form onSubmit={handleSubmit} className="space-y-4 max-w-xl flex flex-col justify-center mx-auto">
       <h1 className="text-2xl font-bold text-slate-800">Crear orden</h1>
 
       <Input

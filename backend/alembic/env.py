@@ -17,8 +17,8 @@ if config.config_file_name is not None:
 settings = get_settings()
 config.set_main_option("sqlalchemy.url", settings.database_url)
 
-from adapters.db.session import Base
-from adapters.db.models import UserModel, WorkOrderModel
+
+from adapters.db.models import UserModel, WorkOrderModel, Base
 
 target_metadata = Base.metadata
 
