@@ -85,7 +85,7 @@ export function OrderDetailForm({ orderId }: OrderDetailFormProps) {
     return <p className="text-red-600">No se pudo cargar la orden.</p>;
 
   return (
-    <div className="space-y-6 max-w-xl">
+    <div className="space-y-6 max-w-xl flex flex-col justify-center mx-auto">
       <h1 className="text-2xl font-bold text-slate-800">
         Orden #{order.id.slice(0, 8)}
       </h1>

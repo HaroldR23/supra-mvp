@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/hooks/useAuth";
 import { Header } from "@/components/layout/Header";
@@ -13,24 +13,35 @@ export default function ProtectedLayout({
   const { isAuthenticated } = useAuth();
   const router = useRouter();
 
+  const [mounted, setMounted] = useState(false);
+  const [hasToken, setHasToken] = useState(false);
+
   useEffect(() => {
-    if (!isAuthenticated && typeof window !== "undefined") {
+    const handleMounted = () => {
+
+      setMounted(true);
+      
       const token = localStorage.getItem("token");
-      if (!token) {
+      setHasToken(!!token);
+      
+      if (!token && !isAuthenticated) {
         router.replace("/login");
       }
-    }
+    };
+    handleMounted();
+  
   }, [isAuthenticated, router]);
 
-  if (!isAuthenticated) {
-    const token = typeof window !== "undefined" ? localStorage.getItem("token") : null;
-    if (!token) {
-      return (
-        <div className="min-h-screen flex items-center justify-center">
-          <p className="text-slate-500">Cargando...</p>
-        </div>
-      );
-    }
+  if (!mounted) {
+    return null;
+  }
+
+  if (!isAuthenticated && !hasToken) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <p className="text-slate-500">Cargando...</p>
+      </div>
+    );
   }
 
   return (

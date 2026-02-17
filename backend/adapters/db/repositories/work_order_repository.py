@@ -1,5 +1,5 @@
 from typing import Optional
-from datetime import date
+from datetime import datetime, date
 from decimal import Decimal
 from sqlalchemy.orm import Session
 from sqlalchemy import and_
@@ -12,17 +12,17 @@ from domain.models.work_order import WorkOrder, WorkOrderStatus
 def _to_domain(model: WorkOrderModel) -> WorkOrder:
     return WorkOrder(
         id=str(model.id),
-        customer_name=model.customer_name,
-        contact_info=model.contact_info,
-        equipment_model=model.equipment_model,
-        serial_number=model.serial_number,
-        intake_reason=model.intake_reason,
+        customer_name=str(model.customer_name),
+        contact_info=str(model.contact_info),
+        equipment_model=str(model.equipment_model),
+        serial_number=str(model.serial_number),
+        intake_reason=str(model.intake_reason),
         status=WorkOrderStatus(model.status.value),
-        warranty=model.warranty,
-        estimated_cost=model.estimated_cost or Decimal("0"),
-        diagnosis=model.diagnosis,
-        created_at=model.created_at,
-        updated_at=model.updated_at,
+        warranty=bool(model.warranty),
+        estimated_cost=Decimal(str(model.estimated_cost)),
+        diagnosis=str(model.diagnosis),
+        created_at=datetime.fromisoformat(str(model.created_at)),
+        updated_at=datetime.fromisoformat(str(model.updated_at)),
     )
 
 

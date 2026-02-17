@@ -1,3 +1,4 @@
+import datetime
 from typing import Optional
 from sqlalchemy.orm import Session
 from ...db.models.user import UserModel, UserRoleEnum
@@ -8,10 +9,10 @@ from domain.models.user import User, UserRole
 def _to_domain(model: UserModel) -> User:
     return User(
         id=str(model.id),
-        email=model.email,
-        hashed_password=model.hashed_password,
+        email=str(model.email),
+        hashed_password=str(model.hashed_password),
         role=UserRole(model.role.value),
-        created_at=model.created_at,
+        created_at=datetime.datetime.fromisoformat(str(model.created_at)),
     )
 
 
