@@ -59,6 +59,17 @@ Las migraciones de Alembic se ejecutan automáticamente durante el inicio de la 
 
 No se requiere configuración manual de la base de datos
 
+## Configuración del Dockerfile del Backend
+
+Antes de iniciar la aplicación, debes modificar el `backend/Dockerfile`:
+
+1. Comenta el CMD actual
+2. Reemplázalo con el siguiente comando:
+
+```dockerfile
+CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8000"]
+```
+
 ## 🚀 Inicia todo con:
 
 ```bash
