@@ -20,7 +20,7 @@ def _to_domain(model: WorkOrderModel) -> WorkOrder:
         status=WorkOrderStatus(model.status.value),
         warranty=bool(model.warranty),
         estimated_cost=Decimal(str(model.estimated_cost)),
-        diagnosis=str(model.diagnosis),
+        diagnosis=model.diagnosis,
         created_at=datetime.fromisoformat(str(model.created_at)),
         updated_at=datetime.fromisoformat(str(model.updated_at)),
     )
