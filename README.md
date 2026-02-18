@@ -65,6 +65,15 @@ No se requiere configuración manual de la base de datos
 ./run.sh
 ```
 
+## 📝 Usuarios Disponibles (Seed Script)
+
+Los siguientes usuarios se crean automáticamente cuando se inicia la aplicación:
+
+- **Admin User**: `admin@workshop.local` / `admin123`
+- **Technician User**: `tech@workshop.local` / `tech123`
+
+Puedes usar estas credenciales para acceder a la aplicación en http://localhost:3000
+
 ## 🌐 URLs de la Aplicación:
 
 Frontend	http://localhost:3000
